@@ -77,8 +77,14 @@ class MemberController extends Controller
             ], status: 404);
         }
 
+        $registration_method = "";
+
+        if($request->role === null){
+            $registration_method = "online";
+        }
+
         //THIS IS FOR ONLINE REGISTRATION IF THE ONLINE SETTINGS IS INACTIVE IT SHOULD NOT ALLOW TO REGISTER
-        if($request->registration_method === "online" && $setting->online !== "active"){
+        if($registration_method === "online" && $setting->online !== "active"){
             return response()->json([
                 "message" => "Online registration is closed."
             ], 404);
@@ -88,7 +94,7 @@ class MemberController extends Controller
         $validator = Validator::make($request->all(), [
             "account_number" => "required|string|min:8|max:8",
             "book" => "required|string|min:6|max:6",
-            "registration_method" => "required|string",
+            // "registration_method" => "required|string",
         ]);
 
         if($validator->fails()){

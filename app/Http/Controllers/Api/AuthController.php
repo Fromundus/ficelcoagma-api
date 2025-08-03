@@ -21,29 +21,29 @@ class AuthController extends Controller
             'role' => 'required|string',
         ]);
 
-        $setting = Setting::first();
+        // $setting = Setting::first();
 
-        $status = "";
+        // $status = "";
 
-        if($setting){
-            if($request->role === "pre"){
-                if($setting->prereg === "active"){
-                    $status = "active";
-                } else {
-                    $status = "inactive";
-                }
-            } else if($request->role === "ons"){
-                if($setting->onsite === "active"){
-                    $status = "active";
-                } else {
-                    $status = "inactive";
-                }
-            } else {
-                $status = "active";
-            }
-        } else {
-            $status = "inactive";
-        }
+        // if($setting){
+        //     if($request->role === "pre"){
+        //         if($setting->prereg === "active"){
+        //             $status = "active";
+        //         } else {
+        //             $status = "inactive";
+        //         }
+        //     } else if($request->role === "ons"){
+        //         if($setting->onsite === "active"){
+        //             $status = "active";
+        //         } else {
+        //             $status = "inactive";
+        //         }
+        //     } else {
+        //         $status = "active";
+        //     }
+        // } else {
+        //     $status = "inactive";
+        // }
 
         $user = User::create([
             'name' => $data['name'],
@@ -51,7 +51,7 @@ class AuthController extends Controller
             'fullname' => $data['fullname'],
             'role' => $data['role'],
             'password' => Hash::make(123456),
-            'status' => $status,
+            // 'status' => 'active',
         ]);
 
         return response()->json($user, 201);
@@ -62,10 +62,18 @@ class AuthController extends Controller
         $credentials = $request->validate([
             'name' => 'required|string',
             'password' => 'required',
+            'required_settings' => 'required',
             'required_role' => 'required',
         ]);
 
         $user = User::where('name', $credentials['name'])->first();
+        $settings = Setting::first();
+
+        if(!$settings){
+            throw ValidationException::withMessages([
+                'name' => ['Settings not configured yet. Please try again later.'],
+            ]);
+        }
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([
@@ -73,11 +81,34 @@ class AuthController extends Controller
             ]);
         }
 
-        if (($user && $user->status !== "active") || ($request->required_role != $user->role)) {
+        if($user && $user->status !== "active"){
             throw ValidationException::withMessages([
-                'name' => ['Invalid Account.'],
+                'name' => ['Inactive Account.'],
             ]);
         }
+
+        if($request->required_role !== $user->role){
+            throw ValidationException::withMessages([
+                'name' => ['Invalid Account Role.'],
+            ]);
+        }
+        
+        if($request->required_settings === "prereg" && $settings->prereg !== "active"){
+            throw ValidationException::withMessages([
+                'name' => ['Pre Registration is currently close.'],
+            ]);
+        } else if ($request->required_settings === "onsite" && $settings->onsite !== "active"){
+            throw ValidationException::withMessages([
+                'name' => ['Onsite Registration is currently close.'],
+            ]);
+        }
+        // if ($user->role !== 'admin' && (($user && $user->status !== "active") || ($request->required_settings === "prereg" && $settings->pregreg !== 'active') || ($request->required_settings === "onsite" && $settings->onsite !== 'active'))) {
+        //     throw ValidationException::withMessages([
+        //         'name' => ['Invalid Account.'],
+        //         'required_settings' => $request->required_settings,
+        //         'settings' => $settings,
+        //     ]);
+        // }
 
         $token = $user->createToken('api_token')->plainTextToken;
 

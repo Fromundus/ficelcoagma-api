@@ -104,6 +104,33 @@ class UserController extends Controller
         }
     }
 
+    public function batchUpdateStatus(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        $status = $request->input('status');
+
+        if (empty($ids)) {
+            return response()->json([
+                'message' => 'No account numbers provided.',
+            ], 400);
+        }
+
+        // Delete from RegisteredMember first
+        $updated = User::whereIn('id', $ids)->update([
+            "status" => $status,
+        ]);
+
+        if ($updated > 0) {
+            return response()->json([
+                'message' => 'Updated successfully',
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'No matching registered members found to update.',
+            ], 404);
+        }
+    }
+
     public function batchDelete(Request $request)
     {
         $ids = $request->input('ids', []);

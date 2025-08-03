@@ -73,8 +73,20 @@ class RegisteredMemberController extends Controller
             ], status: 404);
         }
 
+        $registration_method = "";
+
+        if($request->role === null){
+            $registration_method = "online";
+        } else {
+            if($setting->prereg === 'active'){
+                $registration_method = "prereg";
+            } else {
+                $registration_method = "onsite";
+            }
+        }
+
         //THIS IS FOR ONLINE REGISTRATION IF THE ONLINE SETTINGS IS INACTIVE IT SHOULD NOT ALLOW TO REGISTER
-        if($request->registration_method === "online" && $setting->online !== "active"){
+        if($registration_method === "online" && $setting->online !== "active"){
             return response()->json([
                 "message" => "Online registration is closed."
             ], 404);
@@ -93,7 +105,8 @@ class RegisteredMemberController extends Controller
             "email" => "string|email|nullable",
             "created_by" => "string|nullable",
             "status" => "string|nullable",
-            "registration_method" => "string|nullable",
+            // "registration_method" => "string|nullable",
+            "role" => "string|nullable"
         ]);
 
         if($validator->fails()){
@@ -131,7 +144,7 @@ class RegisteredMemberController extends Controller
                         "created_by" => $request->created_by,
                         "status" => $request->status,
                         "reference_number" => $uuid,
-                        "registration_method" => $request->registration_method,
+                        "registration_method" => $registration_method,
                     ]);
 
                     if($registeredMember){

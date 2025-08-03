@@ -32,6 +32,7 @@ Route::middleware(['auth:sanctum', 'active'])->group(function(){
     Route::get('/accounts', [UserController::class, 'index']);
     Route::post('/account', [AuthController::class, 'register']);
     Route::post('/account/batch-delete', [UserController::class, 'batchDelete']);
+    Route::post('/account/batch-update', [UserController::class, 'batchUpdateStatus']);
 
     //EXPORTS
     Route::prefix('/export')->group(function(){
