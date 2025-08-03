@@ -73,6 +73,8 @@ class UserController extends Controller
         if ($user) {
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|min:3|max:50|unique:users,name,' . $user->id ,
+                'role' => 'required|string',
+
                 // 'email' => 'required|email|unique:users,email,' . $user->id,
             ]);
 
@@ -83,6 +85,7 @@ class UserController extends Controller
             } else {
                 $user->update([
                     "name" => $request->name,
+                    "role" => $request->role,
                     // "email" => $request->email,
                 ]);
 
