@@ -26,6 +26,9 @@ class RegisteredMemberController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('account_number', 'like', "%{$search}%")
                 ->orWhere('name', 'like', "%{$search}%")
+                ->orWhere('address', 'like', "%{$search}%")
+                ->orWhere('occupant', 'like', "%{$search}%")
+                ->orWhere('registration_method', 'like', "%{$search}%")
                 ->orWhere('book', 'like', "%{$search}%");
             });
         }
