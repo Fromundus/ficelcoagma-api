@@ -13,7 +13,16 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $query = User::query();
+        $user = $request->user();
+        $allowedRoles = [];
+
+        if($user->role === 'admin'){
+            $allowedRoles = ['user'];
+        } else if ($user->role === 'superadmin'){
+            $allowedRoles = ['user', 'admin', 'superadmin'];
+        }
+        
+        $query = User::query()->whereIn('role', $allowedRoles);
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -24,7 +33,7 @@ class UserController extends Controller
             });
         }
 
-        $data = $query->orderBy('created_at', 'desc')->paginate(10);
+        $data = $query->orderBy('role')->orderBy('created_at', 'desc')->paginate(10);
 
         return response()->json(['data' => $data], 200);
     }

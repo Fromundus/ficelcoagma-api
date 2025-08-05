@@ -25,6 +25,14 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
+        User::factory()->create([
+            'name' => 'superadmin',
+            'fullname' => 'Superadmin',
+            'email' => '',
+            'password' => Hash::make("gabriellehope24"),
+            'role' => 'superadmin',
+        ]);
+
         Setting::factory(1)->create();
     }
 }

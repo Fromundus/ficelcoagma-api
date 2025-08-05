@@ -41,7 +41,9 @@ class SettingController extends Controller
 
     public function settingsWithLogs(){
         $setting = Setting::first();
-        $recentLogs = Log::latest()->take(10)->get();
+
+        //IF YOU UPDATE THE TAKE VALUE IN SETTINGS WITH LOGS ALSO UPDATE THE VALUE ON UPDATE METHOD.
+        $recentLogs = Log::latest()->take(20)->get();
 
         if($setting){
             return response()->json([
@@ -144,7 +146,7 @@ class SettingController extends Controller
 
                 if($setting){
                     $updatedSetting = Setting::first();
-                    $recentLogs = Log::latest()->take(10)->get();
+                    $recentLogs = Log::latest()->take(20)->get();
 
                     // if($request->field === "onsite"){
                     //     User::where("role", "ons")->update([

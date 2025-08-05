@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class LogController extends Controller
 {
     public function index(){
-        $recentLogs = Log::latest()->take(10)->get();
+        $recentLogs = Log::latest()->take(20)->get();
 
         if($recentLogs->count() > 0){
             return response()->json([

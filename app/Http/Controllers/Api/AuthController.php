@@ -134,6 +134,8 @@ class AuthController extends Controller
 
         if($user->role === 'admin'){
             $loginUrl = "/admin-login";
+        }else if($user->role === 'superadmin'){
+            $loginUrl = "/superadmin-login";
         } else {
             if($settings){
                 if($settings->prereg === "active"){
