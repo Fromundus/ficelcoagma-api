@@ -101,7 +101,7 @@ class RegisteredMemberController extends Controller
             "book" => "required|string|min:6|max:6",
             "name" => "required|string|max:50",
             "address" => "required|string",
-            "occupant" => "string|max:50|nullable",
+            "occupant" => "required|string|max:50",
             "id_presented" => "required|string",
             "id_number" => "required|string",
             "phone_number" => "string|min:11|max:11|nullable",
