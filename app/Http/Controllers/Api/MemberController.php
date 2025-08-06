@@ -77,18 +77,42 @@ class MemberController extends Controller
             ], status: 404);
         }
 
-        $registration_method = "";
+        $user = $request->user();
 
-        if($request->role === null){
-            $registration_method = "online";
+        if(!$user){
+            if($request->registration_method === "online" && $setting->online !== "active"){
+                return response()->json([
+                    "message" => "Online registration is closed."
+                ], 404);
+            }
+        } else {
+            if($user->role === 'user'){
+                if ($request->registration_method === "prereg" && $setting->prereg !== "active"){
+                    return response()->json([
+                        "message" => "Pre registration is closed."
+                    ], 401);
+                } else if ($request->registration_method === "onsite" && $setting->onsite !== "active"){
+                    return response()->json([
+                        "message" => "Onsite registration is closed."
+                    ], 401);
+                }
+            }
         }
 
-        //THIS IS FOR ONLINE REGISTRATION IF THE ONLINE SETTINGS IS INACTIVE IT SHOULD NOT ALLOW TO REGISTER
-        if($registration_method === "online" && $setting->online !== "active"){
-            return response()->json([
-                "message" => "Online registration is closed."
-            ], 404);
-        }
+        //THIS IS FOR ALL REGISTRATION IF THE SETTINGS IS INACTIVE IT SHOULD NOT ALLOW TO REGISTER
+        // if($request->registration_method === "online" && $setting->online !== "active"){
+        //     return response()->json([
+        //         "message" => "Online registration is closed."
+        //     ], 404);
+        // } else if ($request->registration_method === "prereg" && $setting->prereg !== "active"){
+        //     return response()->json([
+        //         "message" => "Pre registration is closed."
+        //     ], 401);
+        // } else if ($request->registration_method === "onsite" && $setting->onsite !== "active"){
+        //     return response()->json([
+        //         "message" => "Onsite registration is closed."
+        //     ], 401);
+        // }
 
         // THIS IS FOR REGISTRATION OF ALL LOGGED IN USER, THE REQUEST TO REGISTER IS HANDLED BY THE ENSUREISACTIVE MIDDLEWARE
         $validator = Validator::make($request->all(), [
@@ -107,6 +131,12 @@ class MemberController extends Controller
             if($member){
                 if($member["status"] === "registered"){
                     $registeredMember = RegisteredMember::where("account_number", $request->account_number)->where("book", $request->book)->first();
+
+                    if($request->registration_method !== "online"){
+                        $registeredMember->update([
+                            "registration_method" => $request->registration_method,
+                        ]);
+                    }
 
                     return response()->json([
                         "message" => "Member is Already Registered",

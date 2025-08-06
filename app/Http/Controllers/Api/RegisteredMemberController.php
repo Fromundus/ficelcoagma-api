@@ -75,25 +75,43 @@ class RegisteredMemberController extends Controller
                 "message" => "Settings is not configured yet. Please try again later."
             ], status: 404);
         }
+        
+        $user = $request->user();
 
-        $registration_method = "";
-
-        if($request->role === null){
-            $registration_method = "online";
+        if(!$user){
+            if($request->registration_method === "online" && $setting->online !== "active"){
+                return response()->json([
+                    "message" => "Online registration is closed."
+                ], 404);
+            }
         } else {
-            if($setting->prereg === 'active'){
-                $registration_method = "prereg";
-            } else {
-                $registration_method = "onsite";
+            if($user->role === 'user'){
+                if ($request->registration_method === "prereg" && $setting->prereg !== "active"){
+                    return response()->json([
+                        "message" => "Pre registration is closed."
+                    ], 401);
+                } else if ($request->registration_method === "onsite" && $setting->onsite !== "active"){
+                    return response()->json([
+                        "message" => "Onsite registration is closed."
+                    ], 401);
+                }
             }
         }
 
-        //THIS IS FOR ONLINE REGISTRATION IF THE ONLINE SETTINGS IS INACTIVE IT SHOULD NOT ALLOW TO REGISTER
-        if($registration_method === "online" && $setting->online !== "active"){
-            return response()->json([
-                "message" => "Online registration is closed."
-            ], 404);
-        }
+        //THIS IS FOR ALL REGISTRATION IF THE SETTINGS IS INACTIVE IT SHOULD NOT ALLOW TO REGISTER
+        // if($request->registration_method === "online" && $setting->online !== "active"){
+        //     return response()->json([
+        //         "message" => "Online registration is closed."
+        //     ], 404);
+        // } else if ($request->registration_method === "prereg" && $setting->prereg !== "active"){
+        //     return response()->json([
+        //         "message" => "Pre registration is closed."
+        //     ], 401);
+        // } else if ($request->registration_method === "onsite" && $setting->onsite !== "active"){
+        //     return response()->json([
+        //         "message" => "Onsite registration is closed."
+        //     ], 401);
+        // }
 
         // THIS IS FOR REGISTRATION OF ALL LOGGED IN USER, THE REQUEST TO REGISTER IS HANDLED BY THE ENSUREISACTIVE MIDDLEWARE
         $validator = Validator::make($request->all(), [
@@ -147,7 +165,7 @@ class RegisteredMemberController extends Controller
                         "created_by" => $request->created_by,
                         "status" => $request->status,
                         "reference_number" => $uuid,
-                        "registration_method" => $registration_method,
+                        "registration_method" => $request->registration_method,
                     ]);
 
                     if($registeredMember){

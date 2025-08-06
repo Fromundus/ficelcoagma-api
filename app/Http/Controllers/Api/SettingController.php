@@ -97,51 +97,29 @@ class SettingController extends Controller
             $user = $request->user();
     
             if($setting){
+
+                $setting->update([
+                    $request->field => $request->status,
+                ]);
+
                 if($request->field === 'prereg'){
                     if($request->status === 'active'){
-                        $setting->update([
-                            $request->field => $request->status,
-                            'onsite' => 'inactive'
-                        ]);
-
-                        $this->createLog($user, "Activated pre registration & deactivated onsite registration.");
-
+                        $this->createLog($user, "Activated pre registration.");
                     } else {
-                        $setting->update([
-                            $request->field => $request->status,
-                            'onsite' => 'active'
-                        ]);
-
-                        $this->createLog($user, "Deactivated pre registration & activated onsite registration.");
-
+                        $this->createLog($user, "Deactivated pre registration.");
                     }
                 } else if ($request->field === 'onsite'){
                     if($request->status === 'active'){
-                        $setting->update([
-                            $request->field => $request->status,
-                            'prereg' => 'inactive'
-                        ]);
-
-                        $this->createLog($user, "Activated onsite registration & deactivated pre registration.");
+                        $this->createLog($user, "Activated onsite registration.");
                     } else {
-                        $setting->update([
-                            $request->field => $request->status,
-                            'prereg' => 'active'
-                        ]);
-
-                        $this->createLog($user, "Deactivated onsite registration & activated pre registration.");
+                        $this->createLog($user, "Deactivated onsite registration.");
                     }
                 } else if ($request->field === 'online') {
-                    $setting->update([
-                        $request->field => $request->status,
-                    ]);
-
                     if($request->status === 'active'){
                         $this->createLog($user, "Activated online registration.");
                     } else {
                         $this->createLog($user, "Deactivated online registration.");
                     }
-
                 }
 
                 if($setting){

@@ -64,6 +64,7 @@ class AuthController extends Controller
             'password' => 'required',
             'required_settings' => 'required',
             'required_role' => 'required',
+            'registration_method' => 'nullable' // i set it to nullalbe becuase of admin role who dont need it, make sure to add registration method to user logins
         ]);
 
         $user = User::where('name', $credentials['name'])->first();
@@ -116,6 +117,7 @@ class AuthController extends Controller
             'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => $user,
+            'registration_method' => $request->registration_method,
         ]);
     }
 
@@ -128,8 +130,6 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
-        $settings = Setting::first();
-
         $loginUrl = "";
 
         if($user->role === 'admin'){
@@ -137,15 +137,7 @@ class AuthController extends Controller
         }else if($user->role === 'superadmin'){
             $loginUrl = "/superadmin-login";
         } else {
-            if($settings){
-                if($settings->prereg === "active"){
-                    $loginUrl = "/prereg";
-                } else {
-                    $loginUrl = "/onsite";
-                }
-            } else {
-                $loginUrl = "/";
-            }
+            $loginUrl = "/". $request->registration_method;
         }
     
         $request->user()->currentAccessToken()->delete();
