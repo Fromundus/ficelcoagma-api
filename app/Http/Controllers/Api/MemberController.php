@@ -132,7 +132,7 @@ class MemberController extends Controller
                 if($member["status"] === "registered"){
                     $registeredMember = RegisteredMember::where("account_number", $request->account_number)->where("book", $request->book)->first();
 
-                    if($request->registration_method !== "online"){
+                    if($request->registration_method === "onsite"){
                         $registeredMember->update([
                             "registration_method" => $request->registration_method,
                         ]);
