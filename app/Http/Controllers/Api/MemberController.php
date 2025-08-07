@@ -132,11 +132,11 @@ class MemberController extends Controller
                 if($member["status"] === "registered"){
                     $registeredMember = RegisteredMember::where("account_number", $request->account_number)->where("book", $request->book)->first();
 
-                    if($request->registration_method === "onsite"){
-                        $registeredMember->update([
-                            "registration_method" => $request->registration_method,
-                        ]);
-                    }
+                    // if($request->registration_method === "onsite"){
+                    //     $registeredMember->update([
+                    //         "registration_method" => $request->registration_method,
+                    //     ]);
+                    // }
 
                     return response()->json([
                         "message" => "Member is Already Registered",
@@ -147,6 +147,37 @@ class MemberController extends Controller
                 return response()->json([
                     "message" => "Successfuly Validated",
                     "data" => $member
+                ], 200);
+            } else {
+                return response()->json([
+                    "message" => "Member Not Found"
+                ], 404);
+            }
+        }
+    }
+
+    public function confirmUpdateOnsite(Request $request){
+        $validator = Validator::make($request->all(), [
+            "account_number" => "required|string|min:8|max:8",
+            "book" => "required|string|min:6|max:6",
+            "registration_method" => "required|string",
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                "message" => $validator->errors()
+            ], 422);
+        } else {
+            $registeredMember = RegisteredMember::where("account_number", $request->account_number)->where("book", $request->book)->first();
+
+            if($registeredMember){
+                $registeredMember->update([
+                    "registration_method" => $request->registration_method,
+                ]);
+
+                return response()->json([
+                    "message" => "Registration Method Updated.",
+                    "data" => $registeredMember,
                 ], 200);
             } else {
                 return response()->json([

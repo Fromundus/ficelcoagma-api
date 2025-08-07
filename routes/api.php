@@ -54,6 +54,7 @@ Route::middleware(['auth:sanctum', 'active'])->group(function(){
     //MEMBER VALIDATION AND REGISTRATION FOR ONSITE AND PRE PREG ACCOUNTS
     Route::prefix('/logged')->group(function(){
         Route::post('/member', [MemberController::class, 'validate']);
+        Route::put('/member-confirm-update-onsite', [MemberController::class, 'confirmUpdateOnsite']);
         Route::post('/member-register', [RegisteredMemberController::class, 'store']);
     });
     
