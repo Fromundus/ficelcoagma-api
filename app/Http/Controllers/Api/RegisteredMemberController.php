@@ -55,6 +55,7 @@ class RegisteredMemberController extends Controller
         }
 
         // Total stats (unfiltered)
+        $totalRegistered = RegisteredMember::count();
         $onsiteCount = RegisteredMember::where('registration_method', 'onsite')->count();
         $onlineCount = RegisteredMember::where('registration_method', 'online')->count();
         $preRegCount = RegisteredMember::where('registration_method', 'prereg')->count();
@@ -65,6 +66,7 @@ class RegisteredMemberController extends Controller
         return response()->json([
             'data' => $data,
             'stats' => [
+                'total' => $totalRegistered,
                 'onsite' => $onsiteCount,
                 'online' => $onlineCount,
                 'prereg' => $preRegCount,
