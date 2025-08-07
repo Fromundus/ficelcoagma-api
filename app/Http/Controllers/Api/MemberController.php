@@ -57,6 +57,12 @@ class MemberController extends Controller
         ->orderBy('month', 'asc')
         ->get();
 
+        $totalRegistered = RegisteredMember::count();
+        $onsiteCount = RegisteredMember::where('registration_method', 'onsite')->count();
+        $onlineCount = RegisteredMember::where('registration_method', 'online')->count();
+        $preRegCount = RegisteredMember::where('registration_method', 'prereg')->count();
+
+
         return response()->json([
             'total_members' => $totalMembers,
             'registered_members' => $registeredMembers,
@@ -64,6 +70,10 @@ class MemberController extends Controller
             'recent_registrations' => $latestRegistrations,
             'daily_registrations' => $daily,
             'monthly_registrations' => $monthly,
+            'total_registered_members' => $totalRegistered,
+            'online' => $onlineCount,
+            'prereg' => $preRegCount,
+            'onsite' => $onsiteCount,
         ]);
     }
 

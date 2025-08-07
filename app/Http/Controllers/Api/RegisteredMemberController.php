@@ -17,6 +17,27 @@ use Illuminate\Support\Str;
 
 class RegisteredMemberController extends Controller
 {
+    // public function index(Request $request)
+    // {
+    //     $search = $request->input('search');
+    //     $query = RegisteredMember::query();
+
+    //     if ($search) {
+    //         $query->where(function ($q) use ($search) {
+    //             $q->where('account_number', 'like', "%{$search}%")
+    //             ->orWhere('name', 'like', "%{$search}%")
+    //             ->orWhere('address', 'like', "%{$search}%")
+    //             ->orWhere('occupant', 'like', "%{$search}%")
+    //             ->orWhere('registration_method', 'like', "%{$search}%")
+    //             ->orWhere('book', 'like', "%{$search}%");
+    //         });
+    //     }
+
+    //     $data = $query->orderBy('created_at', 'desc')->paginate(10);
+
+    //     return response()->json(['data' => $data], 200);
+    // }
+
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -33,10 +54,24 @@ class RegisteredMemberController extends Controller
             });
         }
 
+        // Total stats (unfiltered)
+        $onsiteCount = RegisteredMember::where('registration_method', 'onsite')->count();
+        $onlineCount = RegisteredMember::where('registration_method', 'online')->count();
+        $preRegCount = RegisteredMember::where('registration_method', 'prereg')->count();
+
+        // Paginated, filtered results
         $data = $query->orderBy('created_at', 'desc')->paginate(10);
 
-        return response()->json(['data' => $data], 200);
+        return response()->json([
+            'data' => $data,
+            'stats' => [
+                'onsite' => $onsiteCount,
+                'online' => $onlineCount,
+                'prereg' => $preRegCount,
+            ]
+        ], 200);
     }
+
     
     public function show($reference_number){
         $registeredMember = RegisteredMember::where("reference_number", $reference_number)->first();
