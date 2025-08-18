@@ -125,22 +125,47 @@ class MemberController extends Controller
         // }
 
         // THIS IS FOR REGISTRATION OF ALL LOGGED IN USER, THE REQUEST TO REGISTER IS HANDLED BY THE ENSUREISACTIVE MIDDLEWARE
-        $validator = Validator::make($request->all(), [
-            "account_number" => "required|string|min:8|max:8",
-            "book" => "required|string|min:6|max:6",
-            // "registration_method" => "required|string",
-        ]);
+
+        if($request->registration_method === "online"){
+            $validator = Validator::make($request->all(), [
+                "account_number" => "required|string|min:8|max:8",
+                "book" => "required|string|min:6|max:6",
+            ]);
+        } else if ($request->registration_method === "prereg" || $request->registration_method === "onsite"){
+            $validator = Validator::make($request->all(), [
+                "account_number" => "required|string|min:8|max:8",
+            ]);
+        }
+
 
         if($validator->fails()){
             return response()->json([
                 "message" => $validator->errors()
             ], 422);
         } else {
-            $member = Member::where("account_number", $request->account_number)->where("book", $request->book)->first();
+            $member = null;
+
+            // i removed book from prereg and onsite
+            if($request->registration_method === "online"){
+                $member = Member::where("account_number", $request->account_number)->where("book", $request->book)->first();
+            } else if ($request->registration_method === "prereg" || $request->registration_method === "onsite"){
+                $member = Member::where("account_number", $request->account_number)->first();
+            }
+
+            // $member = Member::where("account_number", $request->account_number)->where("book", $request->book)->first();
 
             if($member){
                 if($member["status"] === "registered"){
-                    $registeredMember = RegisteredMember::where("account_number", $request->account_number)->where("book", $request->book)->first();
+                    $registeredMember = null;
+
+                    // i removed book from prereg and onsite
+                    if($request->registration_method === "online"){
+                        $registeredMember = RegisteredMember::where("account_number", $request->account_number)->where("book", $request->book)->first();
+                    } else if ($request->registration_method === "prereg" || $request->registration_method === "onsite"){
+                        $registeredMember = RegisteredMember::where("account_number", $request->account_number)->first();
+                    }
+
+                    // $registeredMember = RegisteredMember::where("account_number", $request->account_number)->where("book", $request->book)->first();
 
                     // if($request->registration_method === "onsite"){
                     //     $registeredMember->update([
@@ -169,7 +194,7 @@ class MemberController extends Controller
     public function confirmUpdateOnsite(Request $request){
         $validator = Validator::make($request->all(), [
             "account_number" => "required|string|min:8|max:8",
-            "book" => "required|string|min:6|max:6",
+            // "book" => "required|string|min:6|max:6",
             "registration_method" => "required|string",
         ]);
 
@@ -178,7 +203,9 @@ class MemberController extends Controller
                 "message" => $validator->errors()
             ], 422);
         } else {
-            $registeredMember = RegisteredMember::where("account_number", $request->account_number)->where("book", $request->book)->first();
+            // $registeredMember = RegisteredMember::where("account_number", $request->account_number)->where("book", $request->book)->first();
+
+            $registeredMember = RegisteredMember::where("account_number", $request->account_number)->first();
 
             if($registeredMember){
                 $registeredMember->update([
