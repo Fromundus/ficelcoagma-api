@@ -13,10 +13,11 @@ use Maatwebsite\Excel\Facades\Excel;
 Route::middleware(['auth:sanctum', 'active'])->group(function(){
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    
+    Route::get('/dashboard/stats', [MemberController::class, 'getStats']);
 
     Route::middleware('admin')->group(function(){
         //MEMBERS
-        Route::get('/dashboard/stats', [MemberController::class, 'getStats']);
     
         //SETTINGS
         Route::get('/settings', [SettingController::class, 'settingsWithLogs']);
