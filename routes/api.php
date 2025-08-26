@@ -15,20 +15,36 @@ Route::middleware(['auth:sanctum', 'active'])->group(function(){
     Route::post('/logout', [AuthController::class, 'logout']);
     
     Route::get('/dashboard/stats', [MemberController::class, 'getStats']);
-
+    
+    //REGISTERED MEMBERS
+    Route::get('/registered-members', [RegisteredMemberController::class, 'index']);
+    
+    //EXPORTS
+    Route::prefix('/export')->group(function(){
+        Route::get('/csv', function () {
+            return Excel::download(new RegisteredMembersExport, 'registered_members.csv');
+        });
+        
+        Route::get('/xlsx', function () {
+            return Excel::download(new RegisteredMembersExport, 'registered_members.xlsx');
+        });
+        
+        Route::get('/pdf', [RegisteredMemberController::class, 'exportPdf']);
+        
+        Route::get('/sql', [RegisteredMemberController::class, 'exportSql']);
+    });
+    
     Route::middleware('admin')->group(function(){
         //MEMBERS
+        Route::post('/registered-member/batch-delete', [RegisteredMemberController::class, 'batchDelete']);
+        Route::put('/member-update', [RegisteredMemberController::class, 'update']);
+        Route::get('/registered-member-an/{account_number}', [RegisteredMemberController::class, 'showUsingAccountNumber']);
     
         //SETTINGS
         Route::get('/settings', [SettingController::class, 'settingsWithLogs']);
         Route::put('/settings', [SettingController::class, 'update']);
         Route::post('/settings', [SettingController::class, 'store']);
     
-        //REGISTERED MEMBERS
-        Route::get('/registered-members', [RegisteredMemberController::class, 'index']);
-        Route::post('/registered-member/batch-delete', [RegisteredMemberController::class, 'batchDelete']);
-        Route::get('/registered-member-an/{account_number}', [RegisteredMemberController::class, 'showUsingAccountNumber']);
-        Route::put('/member-update', [RegisteredMemberController::class, 'update']);
     
         //USER ACCOUNTS
         Route::get('/accounts', [UserController::class, 'index']);
@@ -36,20 +52,6 @@ Route::middleware(['auth:sanctum', 'active'])->group(function(){
         Route::post('/account/batch-delete', [UserController::class, 'batchDelete']);
         Route::post('/account/batch-update', [UserController::class, 'batchUpdateStatus']);
     
-        //EXPORTS
-        Route::prefix('/export')->group(function(){
-            Route::get('/csv', function () {
-                return Excel::download(new RegisteredMembersExport, 'registered_members.csv');
-            });
-            
-            Route::get('/xlsx', function () {
-                return Excel::download(new RegisteredMembersExport, 'registered_members.xlsx');
-            });
-            
-            Route::get('/pdf', [RegisteredMemberController::class, 'exportPdf']);
-            
-            Route::get('/sql', [RegisteredMemberController::class, 'exportSql']);
-        });
     });
 
     //MEMBER VALIDATION AND REGISTRATION FOR ONSITE AND PRE PREG ACCOUNTS
