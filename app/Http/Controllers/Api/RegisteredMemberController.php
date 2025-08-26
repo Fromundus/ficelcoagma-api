@@ -334,7 +334,7 @@ class RegisteredMemberController extends Controller
         $table = 'registered_members';
         $members = DB::table($table)->get();
 
-        $sql = "INSERT INTO `$table` (`id`, `account_number`, `book`, `name`, `address`, `occupant`, `id_presented`, `id_number`, `phone_number`, `email`, `created_by`, `status`, `reference_number`, `registration_method`, `created_at`, `updated_at`) VALUES\n";
+        $sql = "INSERT INTO `$table` (`id`, `account_number`, `book`, `name`, `address`, `occupant`, `id_presented`, `id_number`, `phone_number`, `email`, `created_by`, `status`, `area`, `reference_number`, `registration_method`, `created_at`, `updated_at`) VALUES\n";
 
         $values = [];
         foreach ($members as $member) {
