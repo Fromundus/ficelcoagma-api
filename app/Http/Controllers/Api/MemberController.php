@@ -62,6 +62,32 @@ class MemberController extends Controller
         $onlineCount = RegisteredMember::where('registration_method', 'online')->count();
         $preRegCount = RegisteredMember::where('registration_method', 'prereg')->count();
 
+        $areaNames = [
+            "001" => "Virac",
+            "002" => "Bato",
+            "003" => "San Andres",
+            "004" => "San Miguel",
+            "005" => "Baras",
+            "006" => "Gigmoto",
+            "007" => "Viga",
+            "008" => "Panganiban",
+            "009" => "Bagamanoc",
+            "010" => "Caramoran",
+            "011" => "Pandan",
+        ];
+
+        $areaStats = RegisteredMember::select(
+            'area',
+            DB::raw('COUNT(*) as count')
+        )
+        ->groupBy('area')
+        ->get()
+        ->map(function ($row) use ($areaNames) {
+            return [
+                'area' => $areaNames[$row->area] ?? $row->area,
+                'count' => $row->count,
+            ];
+        });
 
         return response()->json([
             'total_members' => $totalMembers,
@@ -74,6 +100,7 @@ class MemberController extends Controller
             'online' => $onlineCount,
             'prereg' => $preRegCount,
             'onsite' => $onsiteCount,
+            'area_stats' => $areaStats,
         ]);
     }
 
