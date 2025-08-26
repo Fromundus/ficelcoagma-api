@@ -18,6 +18,7 @@ class RegisteredMember extends Model
         "email",
         "created_by",
         "status",
+        "area",
         "reference_number",
         "registration_method",
     ];

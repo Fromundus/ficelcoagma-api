@@ -201,6 +201,7 @@ class RegisteredMemberController extends Controller
                         "email" => $request->email,
                         "created_by" => $request->created_by,
                         "status" => $request->status,
+                        "area" => $member->area,
                         "reference_number" => $uuid,
                         "registration_method" => $request->registration_method,
                     ]);
@@ -240,7 +241,7 @@ class RegisteredMemberController extends Controller
             "id_number" => "required|string",
             "phone_number" => "string|min:11|max:11|nullable",
             "email" => "string|email|nullable",
-            "createdBy" => "string|nullable",
+            "created_by" => "string|nullable",
             "status" => "string|nullable",
         ]);
 
@@ -262,7 +263,7 @@ class RegisteredMemberController extends Controller
                     "id_number" => $request->id_number,
                     "phone_number" => $request->phone_number,
                     "email" => $request->email,
-                    "createdBy" => $request->createdBy,
+                    "created_by" => $request->created_by,
                     "status" => $request->status,
                     "registration_method" => $request->registration_method,
                 ]);

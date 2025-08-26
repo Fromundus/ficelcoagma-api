@@ -19,5 +19,6 @@ class Member extends Model
         "created",
         "created_by",
         "status",
+        "area",
     ];
 }
