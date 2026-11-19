@@ -49,6 +49,7 @@ class RegisteredMemberController extends Controller
                 ->orWhere('name', 'like', "%{$search}%")
                 ->orWhere('address', 'like', "%{$search}%")
                 ->orWhere('occupant', 'like', "%{$search}%")
+                ->orWhere('occupant_2', 'like', "%{$search}%")
                 ->orWhere('registration_method', 'like', "%{$search}%")
                 ->orWhere('book', 'like', "%{$search}%");
             });
@@ -157,8 +158,11 @@ class RegisteredMemberController extends Controller
             "name" => "required|string|max:50",
             "address" => "required|string",
             "occupant" => "required|string|max:50",
+            "occupant_2" => "nullable|string|max:50",
             "id_presented" => "required|string",
+            "id_presented_2" => "nullable|string",
             "id_number" => "required|string",
+            "id_number_2" => "nullable|string",
             "phone_number" => "string|min:11|max:11|nullable",
             "email" => "string|email|nullable",
             "created_by" => "string|nullable",
@@ -195,8 +199,11 @@ class RegisteredMemberController extends Controller
                         "name" => $request->name,
                         "address" => $request->address,
                         "occupant" => $request->occupant,
+                        "occupant_2" => $request->occupant_2,
                         "id_presented" => $request->id_presented,
+                        "id_presented_2" => $request->id_presented_2,
                         "id_number" => $request->id_number,
+                        "id_number_2" => $request->id_number_2,
                         "phone_number" => $request->phone_number,
                         "email" => $request->email,
                         "created_by" => $request->created_by,
@@ -237,8 +244,11 @@ class RegisteredMemberController extends Controller
             "name" => "required|string|max:50",
             "address" => "required|string",
             "occupant" => "string|max:50|nullable",
+            "occupant_2" => "string|max:50|nullable",
             "id_presented" => "required|string",
+            "id_presented_2" => "required|string",
             "id_number" => "required|string",
+            "id_number_2" => "required|string",
             "phone_number" => "string|min:11|max:11|nullable",
             "email" => "string|email|nullable",
             "created_by" => "string|nullable",
@@ -259,8 +269,11 @@ class RegisteredMemberController extends Controller
                     "name" => $request->name,
                     "address" => $request->address,
                     "occupant" => $request->occupant,
+                    "occupant_2" => $request->occupant_2,
                     "id_presented" => $request->id_presented,
+                    "id_presented_2" => $request->id_presented_2,
                     "id_number" => $request->id_number,
+                    "id_number_2" => $request->id_number_2,
                     "phone_number" => $request->phone_number,
                     "email" => $request->email,
                     "created_by" => $request->created_by,
@@ -335,7 +348,7 @@ class RegisteredMemberController extends Controller
         $table = 'registered_members';
         $members = DB::table($table)->get();
 
-        $sql = "INSERT INTO `$table` (`id`, `account_number`, `book`, `name`, `address`, `occupant`, `id_presented`, `id_number`, `phone_number`, `email`, `created_by`, `status`, `area`, `reference_number`, `registration_method`, `created_at`, `updated_at`) VALUES\n";
+        $sql = "INSERT INTO `$table` (`id`, `account_number`, `book`, `name`, `address`, `occupant`, `occupant_2`, `id_presented`, `id_presented_2`, `id_number`, `id_number_2`, `phone_number`, `email`, `created_by`, `status`, `area`, `reference_number`, `registration_method`, `created_at`, `updated_at`) VALUES\n";
 
         $values = [];
         foreach ($members as $member) {

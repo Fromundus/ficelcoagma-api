@@ -45,6 +45,9 @@
                 <th>Occupant</th>
                 <th>ID Presented</th>
                 <th>ID Number</th>
+                <th>Occupant 2</th>
+                <th>ID Presented 2</th>
+                <th>ID Number 2</th>
                 <th>Phone Number</th>
                 <th>Email</th>
                 <th>Created By</th>
@@ -63,6 +66,9 @@
                 <td>{{ $member->occupant }}</td>
                 <td>{{ $member->id_presented }}</td>
                 <td>{{ $member->id_number }}</td>
+                <td>{{ $member->occupant_2 }}</td>
+                <td>{{ $member->id_presented_2 }}</td>
+                <td>{{ $member->id_number_2 }}</td>
                 <td>{{ $member->phone_number }}</td>
                 <td>{{ $member->email }}</td>
                 <td>{{ $member->created_by ?? $member->name }}</td>

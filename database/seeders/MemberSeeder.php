@@ -13,7 +13,7 @@ class MemberSeeder extends Seeder
      */
     public function run(): void
     {
-        $path = storage_path('app/agmadata.csv');
+        $path = storage_path('app/consumers.csv');
     
         // Read the file and parse tab-delimited values
         $data = array_map(function ($line) {
@@ -27,9 +27,10 @@ class MemberSeeder extends Seeder
 
             DB::table('members')->insert([
                 'account_number' => $row[0],
-                'book'          => $row[1],
-                'name'          => $row[2],
-                'address'       => $row[3],
+                'area'          => $row[1],
+                'book'          => $row[2],
+                'name'          => $row[3],
+                'address'       => $row[4],
             ]);
         }
     }
