@@ -207,9 +207,9 @@ class RegisteredMemberController extends Controller
                     ]);
 
                     if($registeredMember){
-                        if (!empty($registeredMember->email)) {
-                            Mail::to($registeredMember->email)->send(new RegisteredMemberMail($registeredMember));
-                        }
+                        // if (!empty($registeredMember->email)) {
+                        //     Mail::to($registeredMember->email)->send(new RegisteredMemberMail($registeredMember));
+                        // }
 
                         return response()->json([
                             "message" => "Successfuly Registered",

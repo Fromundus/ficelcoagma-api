@@ -20,14 +20,14 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'admin',
             'fullname' => 'Admin',
-            'password' => Hash::make("123456"),
+            'password' => Hash::make("1234"),
             'role' => 'admin',
         ]);
 
         User::factory()->create([
             'name' => 'superadmin',
             'fullname' => 'Superadmin',
-            'password' => Hash::make("gabriellehope24"),
+            'password' => Hash::make("1234"),
             'role' => 'superadmin',
         ]);
 
